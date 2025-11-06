@@ -136,71 +136,129 @@ def get_pbp(game_id: str) -> DataFrame:
     data["GameID"] = game_id
     return data
 
+
 def fill_missing_pbp_data(pbp: DataFrame) -> DataFrame:
-    pbp['LINK_PBP'] = pbp.get('LINK_PBP', '')
-    pbp['situationCode'] = pbp.get('situationCode', '')
-    pbp['homeTeamDefendingSide'] = pbp.get('homeTeamDefendingSide', '')
-    pbp['details.losingPlayerId'] = pbp.get('details.losingPlayerId', '')
-    pbp['details.winningPlayerId'] = pbp.get('details.winningPlayerId', '')
-    pbp['details.xCoord'] = pbp.get('details.xCoord', '')
-    pbp['details.yCoord'] = pbp.get('details.yCoord', '')
-    pbp['details.zoneCode'] = pbp.get('details.zoneCode', '')
-    pbp['details.reason'] = pbp.get('details.reason', '')
-    pbp['details.hittingPlayerId'] = pbp.get('details.hittingPlayerId', '')
-    pbp['details.hitteePlayerId'] = pbp.get('details.hitteePlayerId', '')
-    pbp['details.playerId'] = pbp.get('details.playerId', '')
-    pbp['details.shotType'] = pbp.get('details.shotType', '')
-    pbp['details.shootingPlayerId'] = pbp.get('details.shootingPlayerId', '')
-    pbp['details.awaySOG'] = pbp.get('details.awaySOG', '')
-    pbp['details.homeSOG'] = pbp.get('details.homeSOG', '')
-    pbp['details.blockingPlayerId'] = pbp.get('details.blockingPlayerId', '')
-    pbp['details.assist2PlayerId'] = pbp.get('details.assist2PlayerId', '')
-    pbp['details.assist2PlayerTotal'] = pbp.get('details.assist2PlayerTotal', '')
-    pbp['details.secondaryReason'] = pbp.get('details.secondaryReason', '')
-    pbp['details.typeCode'] = pbp.get('details.typeCode', '')
-    pbp['details.drawnByPlayerId'] = pbp.get('details.drawnByPlayerId', '')
-    pbp['details.serverByPlayerId'] = pbp.get('details.serverByPlayerId', '')
-    pbp = pbp[['GameID', 'LINK_PBP', 'eventId', 'periodDescriptior.number', 'timeInPeriod', 'situationCode', 'homeTeamDefendingSide', 'typeCode', 'typeDescKey', 'sortOrder', 'details.eventOwnerTeamId', 'details.losingPlayerId', 'details.winningPlayerId', 'details.xCoord', 'details.yCoord', 'details.zoneCode', 'details.reason', 'details.hittingPlayerId', 'details.hitteePlayerId', 'details.playerId', 'details.shotType', 'details.shootingPlayerId', 'details.goalieInNetId', 'details.awaySOG', 'details.homeSOG', 'details.blockingPlayerId', 'details.scoringPlayerId', 'details.scroingPlayerTotal', 'details.assist1PlayerId', 'details.assist1PlayerTotal', 'details.assist2PlayerId', 'details.assist2PlayerTotal', 'details.awayScore', 'details.homeScore', 'details.secondaryReason', 'details.typeCode', 'details.descKey', 'details.duration', 'details.commitedByPlayerId', 'details.drawnByPlayerId', 'details.servedByPlayerId']]
+    pbp["LINK_PBP"] = pbp.get("LINK_PBP", "")
+    pbp["situationCode"] = pbp.get("situationCode", "")
+    pbp["homeTeamDefendingSide"] = pbp.get("homeTeamDefendingSide", "")
+    pbp["details.losingPlayerId"] = pbp.get("details.losingPlayerId", "")
+    pbp["details.winningPlayerId"] = pbp.get("details.winningPlayerId", "")
+    pbp["details.xCoord"] = pbp.get("details.xCoord", "")
+    pbp["details.yCoord"] = pbp.get("details.yCoord", "")
+    pbp["details.zoneCode"] = pbp.get("details.zoneCode", "")
+    pbp["details.reason"] = pbp.get("details.reason", "")
+    pbp["details.hittingPlayerId"] = pbp.get("details.hittingPlayerId", "")
+    pbp["details.hitteePlayerId"] = pbp.get("details.hitteePlayerId", "")
+    pbp["details.playerId"] = pbp.get("details.playerId", "")
+    pbp["details.shotType"] = pbp.get("details.shotType", "")
+    pbp["details.shootingPlayerId"] = pbp.get("details.shootingPlayerId", "")
+    pbp["details.awaySOG"] = pbp.get("details.awaySOG", "")
+    pbp["details.homeSOG"] = pbp.get("details.homeSOG", "")
+    pbp["details.blockingPlayerId"] = pbp.get("details.blockingPlayerId", "")
+    pbp["details.assist2PlayerId"] = pbp.get("details.assist2PlayerId", "")
+    pbp["details.assist2PlayerTotal"] = pbp.get("details.assist2PlayerTotal", "")
+    pbp["details.secondaryReason"] = pbp.get("details.secondaryReason", "")
+    pbp["details.typeCode"] = pbp.get("details.typeCode", "")
+    pbp["details.drawnByPlayerId"] = pbp.get("details.drawnByPlayerId", "")
+    pbp["details.serverByPlayerId"] = pbp.get("details.serverByPlayerId", "")
+    pbp = pbp[
+        [
+            "GameID",
+            "LINK_PBP",
+            "eventId",
+            "periodDescriptior.number",
+            "timeInPeriod",
+            "situationCode",
+            "homeTeamDefendingSide",
+            "typeCode",
+            "typeDescKey",
+            "sortOrder",
+            "details.eventOwnerTeamId",
+            "details.losingPlayerId",
+            "details.winningPlayerId",
+            "details.xCoord",
+            "details.yCoord",
+            "details.zoneCode",
+            "details.reason",
+            "details.hittingPlayerId",
+            "details.hitteePlayerId",
+            "details.playerId",
+            "details.shotType",
+            "details.shootingPlayerId",
+            "details.goalieInNetId",
+            "details.awaySOG",
+            "details.homeSOG",
+            "details.blockingPlayerId",
+            "details.scoringPlayerId",
+            "details.scroingPlayerTotal",
+            "details.assist1PlayerId",
+            "details.assist1PlayerTotal",
+            "details.assist2PlayerId",
+            "details.assist2PlayerTotal",
+            "details.awayScore",
+            "details.homeScore",
+            "details.secondaryReason",
+            "details.typeCode",
+            "details.descKey",
+            "details.duration",
+            "details.commitedByPlayerId",
+            "details.drawnByPlayerId",
+            "details.servedByPlayerId",
+        ]
+    ]
     pbp = pbp.convert_dtypes()
     return pbp
 
+
 def get_pbp_for_season(schedule):
     pbp = []
-    for game in schedule['id']:
+    for game in schedule["id"]:
         df = get_pbp(game)
         pbp.append(df)
-    pbp = pd.concat(pbp, ignore_index=True)    
+    pbp = pd.concat(pbp, ignore_index=True)
     return None
 
+
 def get_shifts(game_id: str) -> DataFrame:
-    url = f'https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={game_id}'
+    url = f"https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={game_id}"
     response = r.get(url)
     data = response.json()
     data = pd.json_normalize(data, "data")
     return data
 
+
 def get_shifts_for_season(schedule: DataFrame) -> DataFrame:
     shifts = []
-    for game in schedule['id']:
+    for game in schedule["id"]:
         shift = get_shifts(game)
         shifts.append(shifts)
     shifts = pd.concat(shifts, ignore_index=True)
     return shifts
 
+
 def fill_missing_shifts_data(shifts: DataFrame) -> DataFrame:
-    shifts['gameId'] = shifts.get('gameId', '')
-    shifts['endTime'] = shifts.get('endTime', '')
-    shifts['period'] = shifts.get('period', '')
-    shifts['playerId'] = shifts.get('playerId', '')
-    shifts['shiftNumber'] = shifts.get('shiftNumber', '')
-    shifts['startTime'] = shifts.get('startTime', '')
-    shifts['teamAbbrev'] = shifts.get('teamAbbrev', '')
-    shifts = shifts[['gameId', 'endTime', 'period', 'playerId', 'shiftNumber', 'startTime', 'teamAbbrev']]
+    shifts["gameId"] = shifts.get("gameId", "")
+    shifts["endTime"] = shifts.get("endTime", "")
+    shifts["period"] = shifts.get("period", "")
+    shifts["playerId"] = shifts.get("playerId", "")
+    shifts["shiftNumber"] = shifts.get("shiftNumber", "")
+    shifts["startTime"] = shifts.get("startTime", "")
+    shifts["teamAbbrev"] = shifts.get("teamAbbrev", "")
+    shifts = shifts[
+        [
+            "gameId",
+            "endTime",
+            "period",
+            "playerId",
+            "shiftNumber",
+            "startTime",
+            "teamAbbrev",
+        ]
+    ]
     shifts = shifts.convert_dtypes()
     return shifts
-    
-def write_to_csv(file_name: str, data: DataFrame) -> None: 
+
+
+def write_to_csv(file_name: str, data: DataFrame) -> None:
     data.to_csv(file_name, index=False, header=True)
     return
-
-
