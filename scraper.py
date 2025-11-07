@@ -1,11 +1,11 @@
 import pandas as pd
 from pandas import DataFrame
 import requests as r
-
-seasons = ["20222023", "20232024", "20242025"]
-
+import asyncio
+# seasons = ["20222023", "20232024", "20242025"]
 
 def get_skaters(season: str) -> DataFrame:
+    print(f'getting skaters for {season}')
     df = r.get(
         f"https://api.nhle.com/stats/rest/en/skater/bios?limit=-1&start=0&cayenneExp=seasonId={season}"
     )
@@ -30,10 +30,12 @@ def get_skaters(season: str) -> DataFrame:
     return df
 
 
-def get_goalies(season: str) -> DataFrame:
+def get_goalies(season: str):
+    print(f'getting goalies for {season}')
     df = r.get(
-        f"https://api.nhle.com/stats/rest/en/goalies/bios?limit=-1&start=0&cayenneExp=seasonId={season}"
+        f"https://api.nhle.com/stats/rest/en/goalie/bios?limit=-1&start=0&cayenneExp=seasonId={season}"
     )
+    # print(df.json)
     df = df.json()
     df = pd.json_normalize(df, "data")
     # rename 'skaterFullName' to 'name' and select and order columns
@@ -57,7 +59,8 @@ def get_goalies(season: str) -> DataFrame:
 
 
 def get_players(season: str):
-    df = pd.concat(get_skaters(season), get_goalies(season))
+    df = pd.concat([get_skaters(season), get_goalies(season)])
+    
     df["Season"] = season
     # reorder columns so they start with the season
     df = df[
@@ -92,15 +95,22 @@ def get_teams() -> DataFrame:
 def get_schedule(season: str, team_tri_code: str) -> DataFrame:
     url = f"https://api-web.nhle.com/v1/club-schedule-season/{team_tri_code}/{season}"
     res = r.get(url)
-    df = res.json()
-    df = pd.json_normalize(df, "games")
-    return df
+    if res.ok:
+
+        df = res.json()
+        df = pd.json_normalize(df, "games")
+        return df
+    return pd.DataFrame()
 
 
 def get_schedules(season: str, teams: DataFrame) -> DataFrame:
     schedule = []
     for triCode in teams["triCode"]:
-        schedule.append(get_schedule(triCode))
+        team_schedule = get_schedule(season, triCode)
+        print(team_schedule.empty)
+        if team_schedule.empty == False:
+            schedule.append(team_schedule)
+        
     schedule = pd.concat(schedule, ignore_index=True)
     schedule = schedule.drop_duplicates(subset=["id"])
     # select and order columns and convert datatypes to avoid floats
@@ -119,7 +129,7 @@ def get_schedules(season: str, teams: DataFrame) -> DataFrame:
             "gameOutcome.lastPeriodType",
         ]
     ]
-    schedule = schedule.convert_dtype()
+    schedule = schedule.convert_dtypes()
 
     # remove preseason and playoff games
     no_preseason = schedule["gameType"].isin([2, 3])
@@ -210,13 +220,14 @@ def fill_missing_pbp_data(pbp: DataFrame) -> DataFrame:
     return pbp
 
 
-def get_pbp_for_season(schedule):
+def get_pbp_for_season(schedule) -> DataFrame:
     pbp = []
     for game in schedule["id"]:
         df = get_pbp(game)
+        df = fill_missing_pbp_data(game)
         pbp.append(df)
     pbp = pd.concat(pbp, ignore_index=True)
-    return None
+    return pbp
 
 
 def get_shifts(game_id: str) -> DataFrame:
@@ -231,7 +242,7 @@ def get_shifts_for_season(schedule: DataFrame) -> DataFrame:
     shifts = []
     for game in schedule["id"]:
         shift = get_shifts(game)
-        shifts.append(shifts)
+        shifts.append(shift)
     shifts = pd.concat(shifts, ignore_index=True)
     return shifts
 
@@ -262,3 +273,29 @@ def fill_missing_shifts_data(shifts: DataFrame) -> DataFrame:
 def write_to_csv(file_name: str, data: DataFrame) -> None:
     data.to_csv(file_name, index=False, header=True)
     return
+
+def main():
+    seasons = [
+        "20212022",
+        # "20222023",
+        # "20232024",
+        # "20242025",
+        # "20252026"
+    ]
+    teams = get_teams()
+    for season in seasons:
+        schedule = get_schedules(season, teams)
+        season_pbp = get_pbp_for_season(schedule)
+        write_to_csv(f'season_pbp_raw_{season}.csv', season_pbp)
+        
+    # write_to_csv(f'teams_raw.csv', teams)
+    # for season in seasons:
+    #     skaters = get_skaters(season)
+    #     goalies = get_goalies(season)
+    #     write_to_csv(f'skaters_raw_{season}.csv', skaters)
+    #     write_to_csv(f'goalies_raw_{season}.csv', goalies)
+
+
+
+    return None
+main()
